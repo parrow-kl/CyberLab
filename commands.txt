@@ -1,0 +1,44 @@
+# Day 1 - Linux & Basic Security Investigation
+
+# Identity and system information
+pwd
+whoami
+hostname
+uname -a
+cat /etc/os-release
+id
+
+# Files and permissions
+ls -la
+stat notes.md
+
+# Processes
+sleep 300 &
+ps
+kill <PID>
+
+# Network sockets
+ss -tuln
+sudo ss -tulpn
+sudo ss -lntup
+
+# Port/process investigation
+ps -p <PID> -f
+readlink /proc/<PID>/exe
+pstree -sp <PID>
+
+# Local network scanning
+nmap 127.0.0.1
+nmap -p 53 localhost
+sudo nmap -sV -p 53 127.0.0.53
+sudo nmap -sV -p 53 192.168.122.1
+
+# Service investigation
+systemctl status cups
+systemctl status systemd-resolved
+
+# Process investigation
+ps aux | grep system
+ps -p 1133 -f
+sudo ls -l /proc/1133/exe
+sudo readlink /proc/1133/exe
