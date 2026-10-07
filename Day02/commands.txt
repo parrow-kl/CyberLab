@@ -1,0 +1,95 @@
+# Day 2 - Linux Security & System Enumeration
+
+# User and group enumeration
+whoami
+id
+groups
+
+# Sudo privilege enumeration
+sudo -l
+
+# Process enumeration
+
+ps aux --sort=-%cpu | head -20
+ps -U root -u root u
+pstree -p
+
+# Network socket enumeration
+
+sudo ss -lntup
+
+# SUID enumeration
+
+find / -perm -4000 -type f 2>/dev/null
+
+# SGID enumeration
+
+find / -perm -2000 -type f 2>/dev/null
+
+# Inspect selected SUID files
+
+ls -l /opt/LM-Studio/chrome-sandbox
+ls -l /usr/bin/pkexec
+ls -l /usr/bin/ntfs-3g
+ls -l /usr/sbin/pppd
+ls -l /usr/bin/fusermount3
+
+file /opt/LM-Studio/chrome-sandbox
+file /usr/bin/pkexec
+file /usr/bin/ntfs-3g
+file /usr/sbin/pppd
+file /usr/bin/fusermount3
+
+# World-writable files
+
+find /etc /usr/local /opt -type f -perm -0002 -ls 2>/dev/null
+
+# World-writable directories
+
+find /etc /usr/local /opt -type d -perm -0002 -ls 2>/dev/null
+
+# Environment enumeration
+
+env
+
+echo "$PATH"
+echo "$HOME"
+echo "$USER"
+echo "$SHELL"
+echo "$PWD"
+
+# PATH directory permissions
+
+ls -ld /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin /usr/games /usr/local/games /snap/bin "$HOME/.lmstudio/bin" "$HOME/.local/share/JetBrains/Toolbox/scripts"
+
+printf '%s\n' "$PATH" | tr ':' '\n' | nl -ba
+
+# Command resolution
+
+command -v python
+command -v sudo
+command -v ls
+
+type -a python
+type -a sudo
+type -a ls
+
+type -a python3
+command -v python3
+
+# System information
+
+uname -a
+cat /etc/os-release
+
+# Failed services
+
+systemctl --failed
+
+# Firewall status
+
+sudo ufw status verbose
+
+# AppArmor status
+
+aa-status 2>/dev/null
