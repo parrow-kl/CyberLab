@@ -1,0 +1,45 @@
+# Day 03 — Linux Privilege Review
+# Run only on systems you own or are authorized to assess.
+# These commands inspect configuration and permissions; they do not modify system state.
+
+## 1. Identity and privilege baseline
+whoami
+id
+sudo -l
+grep '^root:' /etc/passwd
+ls -l /etc/passwd /etc/shadow
+
+## 2. Linux file capabilities
+getcap -r / 2>/dev/null
+
+## 3. Writable paths in the current user's home directory
+ls -ld ~
+find ~ -type f -writable 2>/dev/null | head -50
+find ~ -type d -writable 2>/dev/null | head -50
+
+## 4. Scheduled-task review
+ls -la /etc/cron.d/
+cat /etc/crontab
+ls -la /etc/cron.hourly/
+ls -la /etc/cron.daily/
+ls -la /etc/cron.weekly/
+
+## 5. Running-service and unit-file review
+systemctl list-units --type=service --state=running --no-pager
+systemctl list-unit-files --type=service --no-pager | head -50
+systemctl show docker --no-pager
+systemctl cat docker.service
+systemctl show cron --no-pager
+systemctl cat cron.service
+
+## 6. Docker socket access-control review
+ls -l /run/docker.sock
+getent group docker
+id -nG
+docker ps
+sudo docker ps
+
+## 7. Privileged local virtualization interfaces
+getent group sudo lxd libvirt docker
+lxc list
+virsh -c qemu:///system list --all
