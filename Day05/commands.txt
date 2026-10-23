@@ -1,0 +1,28 @@
+# Day 05 — Linux Log Review and Incident Triage
+# Run only on systems you own or are authorized to assess.
+# These commands read system state and logs; they do not alter configuration.
+
+## 1. System and login baseline
+date -Is
+uptime
+last -n 10
+# On Ubuntu systems where `last` is unavailable, install the distribution-provided
+# wtmpdb utility only after reviewing the package prompt and obtaining approval.
+
+## 2. Current-boot warning and error review
+sudo journalctl -p warning..alert -b --no-pager -n 100
+sudo systemctl --failed --no-pager
+journalctl --disk-usage
+
+## 3. Authentication and privilege review
+sudo journalctl _COMM=sudo -b --no-pager -n 50
+sudo journalctl -u ssh -b --no-pager -n 50
+
+## 4. Service-specific log review
+sudo journalctl -u docker -b --no-pager -n 50
+sudo journalctl -u libvirtd -b --no-pager -n 50
+
+## 5. Authentication-service configuration follow-up
+sudo systemctl status sssd --no-pager
+sudo systemctl status sssd-pam.socket sssd-sudo.socket --no-pager
+sudo grep -R --line-number --fixed-string 'admin' /etc/polkit-1/rules.d /usr/share/polkit-1/rules.d 2>/dev/null
